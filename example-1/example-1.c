@@ -24,7 +24,8 @@ static const char DEVICE[] = "/dev/video0";
 int print_capabilities(int fd) {
   int ret;
   struct v4l2_capability caps = {0};
-  
+ 
+  // VIDOC_QUERYCAP : Query device capabilities and verifies kernel driver compatibility
   ret = ioctl(fd, VIDIOC_QUERYCAP, &caps);
   if (ret == -1) {
     perror("Querying device capabilities");

@@ -516,7 +516,8 @@ init_device                     (void)
         fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         fmt.fmt.pix.width       = 640; 
         fmt.fmt.pix.height      = 480;
-        fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+        //fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+        fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_GREY;
         fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
         if (-1 == xioctl (fd, VIDIOC_S_FMT, &fmt))
@@ -614,7 +615,7 @@ int
 main                            (int                    argc,
                                  char **                argv)
 {
-        dev_name = "/dev/video";
+        dev_name = "/dev/video0";
 
         for (;;) {
                 int index;
@@ -656,7 +657,6 @@ main                            (int                    argc,
                         exit (EXIT_FAILURE);
                 }
         }
-
         open_device ();
 
         init_device ();

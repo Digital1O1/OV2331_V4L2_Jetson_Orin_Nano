@@ -1,8 +1,17 @@
-CC=gcc
-CCFLAGS=-Wall
+CXX      := g++
+CXXFLAGS := -g -Wall -std=c++17
+LDFLAGS  := $(shell pkg-config --libs opencv4)
+INCLUDES := $(shell pkg-config --cflags opencv4)
 
-example-5: example-5.c
-	$(CC) $(CCFLAGS) $^ -o $@
+TARGET   := example-5
+SRC      := example-5.c
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 clean:
-	rm -f example-5
+	rm -f $(TARGET)

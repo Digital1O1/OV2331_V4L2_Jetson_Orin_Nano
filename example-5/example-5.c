@@ -7,7 +7,7 @@
  * Kyle M. Douglass, 2018
  * kyle.m.douglass@gmail.com
  */
-
+#include <sys/ioctl.h>
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -18,7 +18,7 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 #include <unistd.h>
-
+#include <opencv2/opencv.hpp>
 static const char DEVICE[] = "/dev/video0";
 
 int fd;
@@ -56,7 +56,9 @@ static void init_mmap(void) {
     exit(EXIT_FAILURE);
   }
 
-  buffers = calloc(reqbuf.count, sizeof(*buffers));
+  //buffers = calloc(reqbuf.count, sizeof(*buffers));
+  buffers = (decltype(buffers))calloc(reqbuf.count, sizeof(*buffers));
+
   assert(buffers != NULL);
 
   num_buffers = reqbuf.count;
@@ -105,9 +107,10 @@ static void init_device() {
   struct v4l2_format fmt = {0};
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-  fmt.fmt.pix.width = 640;
-  fmt.fmt.pix.height = 480;
-  fmt.fmt.pix.pixelformat = fmtdesc.pixelformat;
+  fmt.fmt.pix.width = 1600;
+  fmt.fmt.pix.height = 1300;
+  fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_GREY;
+  //fmt.fmt.pix.pixelformat = fmtdesc.pixelformat;
   fmt.fmt.pix.field = V4L2_FIELD_NONE;
 
   if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt)) {
@@ -178,6 +181,20 @@ static void stop_capturing(void) {
  * Normally, the buffer would be processed here.
  */
 static void process_image(const void * pBuffer) {
+  static int image_width  = 1600;
+  static int image_height = 1300;   
+
+  cv::Mat image(
+        image_height,
+        image_width,
+        CV_8UC1,
+        (void*)pBuffer
+    );
+
+    cv::imshow("OV2311", image);
+    cv::waitKey(1);
+
+
   fputc('.', stdout);
   fflush(stdout);
 }
@@ -225,8 +242,8 @@ static int read_frame(void) {
  */
 static void main_loop(void) {
   unsigned int count = 100; // Record 100 frames
-  while(count-- > 0) {
-
+  //while(count-- > 0) {
+    while(true){
     fd_set fds;
     struct timeval tv;
     int r;

@@ -25,6 +25,8 @@ static const char DEVICE[] = "/dev/video0";
  * Make the request to the device for single plane buffers.
  */
 int request_buffers(int fd) {
+  // reqbuf is an instance of a struct, so accessing members is the same as if it were a class object
+  // Keep in mind structs can only hold data and can't 'hold' functions like walk()
   struct v4l2_requestbuffers reqbuf;
   struct {
     void *start;
@@ -51,7 +53,7 @@ int request_buffers(int fd) {
     printf("Not enough buffer memory\n");
     exit(EXIT_FAILURE);
   }
-
+  // 
   buffers = calloc(reqbuf.count, sizeof(*buffers));
   assert(buffers != NULL);
 

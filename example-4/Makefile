@@ -1,5 +1,5 @@
 CC=gcc
-CCFLAGS=-Wall
+CCFLAGS=-Wall -g
 
 example-4: example-4.c
 	$(CC) $(CCFLAGS) $^ -o $@
